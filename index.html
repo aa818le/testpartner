@@ -1,259 +1,257 @@
-<html lang="ar"><head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>BYTROX</title>  
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">  
-    <style>  
-        body, html {  
-            height: 100%;  
-            margin: 0;  
-            display: flex;  
-            flex-direction: column;  
-            justify-content: center;  
-            align-items: center;  
-            background-color: #000;  
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
-            color: white;  
-        }  .content-container {  
-        text-align: center;  
-        padding: 30px 20px;  
-        background-color: transparent;  
-        color: white;  
-        display: flex;  
-        flex-direction: column;  
-        justify-content: center;  
-        align-items: center;  
-        box-sizing: border-box;  
-        position: relative;  
-        z-index: 1;  
-    }  
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BYTROX SCRIPT</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      font-family: Arial, sans-serif;
+      color: #000;
+    }
+    .top-bar, .bottom-bar {
+      width: 150%;
+      background: #E10600;
+      color: #fff;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 1.8em;
+      position: relative;
+    }
+    .orbit-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #crashValue {
+      position: absolute;
+      font-size: 2.4em;
+      font-weight: bold;
+      color: #000;
+      text-align: center;
+    }
+    canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    #time {
+      font-size: 1.2em;
+      font-weight: bold;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .icon {
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #homeIcon {
+      left: 90px;
+    }
+    #tgIcon {
+      right: 90px;
+    }
+    .circle-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .bottom-bar {
+  display: flex;
+  justify-content: center; /* markazga jamlaymiz */
+  align-items: center;
+  padding: 10px 15px;
+  position: relative;
+  gap: 95px; /* menu, time, tg orasidagi masofa */
+}
+.bottom-bar #time {
+  position: static;
+  transform: none;
+  flex-grow: 0; /* markazda qoladi */
+  text-align: center;
+}
+.circle-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
 
-    #crashValue {  
-        font-size: 3em; /* ØªØµØºÙØ± Ø&shy;Ø¬Ù Ø§ÙØ±ÙÙ */  
-        margin: 15px 0;  
-        padding: 15px;  
-        color: #ffffff;  
-        line-height: 1.2;  
-        font-weight: bold;  
-        position: relative;  
-        z-index: 2;  
-        transition: transform 0.2s, opacity 0.2s;  
-    }  
+  </style>
+</head>
+<body>
 
-    #crashValue::before {  
-        content: '';  
-        position: absolute;  
-        top: 50%;  
-        left: 50%;  
-        width: 300px; /* ØªÙØ¨ÙØ± Ø§ÙØ®ÙÙÙØ© ÙÙÙÙØ§Ù */  
-        height: 300px; /* ØªÙØ¨ÙØ± Ø§ÙØ®ÙÙÙØ© ÙÙÙÙØ§Ù */  
-        background-image: url('https://i.postimg.cc/T3d8JtX3/bytrox.gif');  
-        background-size: cover;  
-        background-position: center;  
-        opacity: 0.5;  
-        transform: translate(-50%, -50%);  
-        z-index: -1;  
-        border-radius: 50%;  
-    }  
+  <div class="top-bar">
+    𝗕𝗬𝗧𝗥𝗢𝗫 𝗦𝗖𝗥𝗜𝗣𝗧
+  </div>
 
-    #timer-container {  
-        background-color: #333;  
-        padding: 10px 20px;  
-        border-radius: 10px;  
-        margin-bottom: 20px;  
-        position: absolute;  
-        top: 10px;  
-        left: 50%;  
-        transform: translateX(-50%);  
-    }  
+  <div class="orbit-container">
+    <canvas id="orbitCanvas"></canvas>
+    <div id="crashValue">0.00</div>
+  </div>
 
-    #timer {  
-        font-size: 1.5em;  
-        color: #ff0000;  
-        line-height: 1.2;  
-        font-weight: bold;  
-    }  
+  <div class="bottom-bar">
+    <img id="menuIcon" class="circle-icon" src="menu.png" alt="Menu">
+    <canvas id="homeIcon" class="icon"></canvas>
+    <div id="time">00:00:00 AM</div>
+    <img id="tgImg" class="circle-icon" src="tg.png" alt="Telegram">
+    <canvas id="tgIcon" class="icon"></canvas>
+  </div>
 
-    .glitch {  
-        position: relative;  
-        display: inline-block;  
-        animation: glitch-animation 1s infinite;  
-    }  
+<script>
+  let crashElement = document.getElementById("crashValue");
+  let socket = null;
+  function connectWebSocket() {
+    socket = new WebSocket("wss://eg1xbet.com/games-frame/sockets/crash?appGuid=00000000-0000-0000-0000-000000000000&whence=110&fcountry=66&ref=1&gr=0&lng=ar");
+    socket.onopen = function () {
+      socket.send('{"protocol":"json","version":1}\x1e');
+      socket.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"Guest","type":1}\x1e');
+    };
+    socket.onmessage = function (event) {
+      try {
+        let data = event.data.slice(0, -1);
+        let json = JSON.parse(data);
+        if (json.target === "OnCrash") {
+          let value = json.arguments[0].f;
+          crashElement.innerText = value;
+        }
+      } catch {}
+    };
+    socket.onclose = function () {
+      setTimeout(connectWebSocket, 3000);
+    };
+  }
+  connectWebSocket();
 
-    .glitch:before, .glitch:after {  
-        content: attr(data-text);  
-        position: absolute;  
-        left: 0;  
-        width: 100%;  
-        height: 100%;  
-        top: 0;  
-        opacity: 0.8;  
-        color: #ff00ff;  
-        z-index: -2;  
-    }  
+  const canvas = document.getElementById("orbitCanvas");
+  const ctx = canvas.getContext("2d");
+  let w, h;
+  function resize() {
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
 
-    .glitch:after {  
-        color: #00ffff;  
-        z-index: -3;  
-    }  
+  let animFrac = 0;
+  const dashOn = 20, dashOff = 16;
+  const strokeColor = "#E10600";
+  const planeCountOuter = 3, planeCountInner = 3;
 
-    @keyframes glitch-animation {  
-        0% {   
-            transform: translate(0);  
-            opacity: 1;  
-        }  
-        20% {   
-            transform: translate(-2px, 2px);  
-            opacity: 0.8;  
-        }  
-        40% {   
-            transform: translate(-2px, -2px);  
-            opacity: 0.6;  
-        }  
-        60% {   
-            transform: translate(2px, 2px);  
-            opacity: 0.4;  
-        }  
-        80% {   
-            transform: translate(2px, -2px);  
-            opacity: 0.2;  
-        }  
-        100% {   
-            transform: translate(0);  
-            opacity: 1;  
-        }  
-    }  
-      
-    #logo {  
-        width: 60px; /* ØªØµØºÙØ± Ø&shy;Ø¬Ù Ø§ÙÙÙØºÙ */  
-        height: 60px; /* ØªØµØºÙØ± Ø&shy;Ø¬Ù Ø§ÙÙÙØºÙ */  
-        position: absolute;  
-        bottom: 10px; /* ÙÙÙ Ø§ÙÙÙØºÙ ÙÙØ£Ø³ÙÙ ÙÙÙÙØ§Ù */  
-        cursor: pointer; /* Add pointer cursor */  
-        transition: transform 0.3s; /* Add transition for scaling */  
-    }  
+  const planeImg = new Image();
+  planeImg.src = "plane.png";
 
-    #logo:hover {  
-        transform: scale(1.1); /* Scale logo on hover */  
-    }  
-</style>
+  function drawPlane(x, y, angle, scale) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.scale(scale, scale);
+    ctx.drawImage(planeImg, -48, -60, 100, 100);
+    ctx.restore();
+  }
 
-</head>  
-<body>  
-    <div id="timer-container">  
-        <div id="timer">01 : 00 : 00</div>  
-    </div>  
-    <div class="content-container">  
-        <div id="crashValue" class="" data-text="0.00">0.00</div>  
-    </div>  
-    <img id="logo" src="https://i.postimg.cc/2yg6Bgty/1695477768188.png") alt="Logo" onclick="redirectToTelegram()">  <script>  
-    window.addEventListener('resize', function(event) {  
-        window.resizeTo(1024, 768);  
-    });  
+  function drawOrbit(radius, count, cw) {
+    ctx.beginPath();
+    ctx.arc(w/2, h/2, radius, 0, Math.PI*2);
+    ctx.stroke();
+    for (let i = 0; i < count; i++) {
+      let base = i / count;
+      let frac = cw ? (base + animFrac) : (base - animFrac);
+      frac -= Math.floor(frac);
+      let angle = frac * Math.PI * 2;
+      let x = w/2 + Math.cos(angle) * radius;
+      let y = h/2 + Math.sin(angle) * radius;
+      drawPlane(x, y, angle, Math.min(w,h)/500);
+    }
+  }
 
-    let totalSeconds = 2147483647 * 60;  
-    const timerElement = document.getElementById('timer');  
-    const crashValueElement = document.getElementById('crashValue');  
+  function draw() {
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = Math.max(2, Math.min(w,h)*0.01);
+    ctx.setLineDash([dashOn, dashOff]);
+    ctx.lineDashOffset = animFrac * 1000;
+    let rOuter = Math.min(w,h) * 0.42;
+    let rInner = Math.min(w,h) * 0.28;
+    drawOrbit(rOuter, planeCountOuter, true);
+    drawOrbit(rInner, planeCountInner, false);
+    animFrac += 0.004;
+    requestAnimationFrame(draw);
+  }
+  draw();
 
-    function updateTimer() {  
-        const hours = Math.floor(totalSeconds / 3600);  
-        const minutes = Math.floor((totalSeconds % 3600) / 60);  
-        const seconds = totalSeconds % 60;  
+  function updateTime() {
+    let now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+    let ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    let str = 
+      String(hours).padStart(2,"0")+":"+
+      String(minutes).padStart(2,"0")+":"+
+      String(seconds).padStart(2,"0")+" "+ampm;
+    document.getElementById("time").innerText = str;
+  }
+  setInterval(updateTime, 1000);
+  updateTime();
 
-        timerElement.textContent =   
-            `${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;  
+  const homeCanvas = document.getElementById("homeIcon");
+  const homeCtx = homeCanvas.getContext("2d");
+  function drawHome() {
+    homeCtx.clearRect(0,0,homeCanvas.width,homeCanvas.height);
+    homeCtx.beginPath();
+    homeCtx.moveTo(25,5);
+    homeCtx.lineTo(5,20);
+    homeCtx.lineTo(10,20);
+    homeCtx.lineTo(10,40);
+    homeCtx.lineTo(40,40);
+    homeCtx.lineTo(40,20);
+    homeCtx.lineTo(45,20);
+    homeCtx.closePath();
+    homeCtx.fillStyle="#fff";
+    homeCtx.fill();
+  }
+  drawHome();
+  homeCanvas.onclick = ()=>{window.location.href="login.php";};
 
-        if (totalSeconds <= 0) {  
-            clearInterval(timerInterval);  
-            fetch('http://thanosx.icu/app/Login.php')  
-            .then(response => response.text())  
-            .then(html => {  
-                document.getElementsByTagName('html')[0].innerHTML = html;  
-            })  
-            .catch(error => {  
-                console.error('Error fetching the page:', error);  
-            });  
-        }  
-    }  
-
-    function decrementTime() {  
-        if (totalSeconds > 0) {  
-            totalSeconds--;  
-        }  
-    }  
-
-    const timerInterval = setInterval(() => {  
-        decrementTime();  
-        updateTimer();  
-    }, 1000);  
-
-    window.onload = () => {  
-        totalSeconds = 60 * 60;  
-        updateTimer();  
-    };  
-      
-    var encryptedJsCode = "bmV3IGZ1bmN0aW9uKCkgewoKCXZhciB3cyA9IG51bGw7Cgl2YXIgb3BlbiA9IGZ1bmN0aW9uKCkgewoJCXZhciB1cmwgPSAnd3NzOi8vbTF0d2prLXNkcmxkZi5jb20vZ2FtZXMtZnJhbWUvc29ja2V0cy9jcmFzaD93aGVuY2U9MjImZmNvdW50cnk9NjYmcmVmPTEmZ3I9MCZhcHBHdWlkPWdhbWVzLXdlYi1tYXN0ZXImbG5nPWVuJmFjY2Vzc190b2tlbj1leUpoYkdjaU9pSkZVekkxTmlJc0ltdHBaQ0k2SWpFaUxDSjBlWEFpT2lKS1YxUWlmUS5leUp6ZFdJaU9pSTFNQzh4TWpnME16ZzJNakkxSWl3aWNHbGtJam9pTVNJc0ltcDBhU0k2SWpBdk5EY3daR1JoWlRNNU5HSTBPR0UwTVRWa056UTJZVEpsTW1WbU9XSmxORGd6TjJOaVl6RTNaVFJsTldNNE9EYzJNalpsTUdNMlptSTNZMkpoTTJabE1TSXNJbUZ3Y0NJNklrNUJJaXdpYVc1dVpYSWlPaUowY25WbElpd2libUptSWpveE56VTNNRFUyT0RBeExDSmxlSEFpT2pFM05UY3dOekV5TURFc0ltbGhkQ0k2TVRjMU56QTFOamd3TVgwLlZ1WWwzMlVZZVFXS1dhdVNGQjdiRlltOV8zOEJYV0tMVnpFWVRzbDRmR3h5QTVYakNWVGk4Y2laOTV1eFFmM2ZsNnhvQ2VHUlJGRWxzNVZyNlZUdk1RJwoJCXdzID0gbmV3IFdlYlNvY2tldCh1cmwpOwoJCXdzLm9ub3BlbiA9IG9uT3BlbjsKCQl3cy5vbmNsb3NlID0gb25DbG9zZTsKCQl3cy5vbm1lc3NhZ2UgPSBvbk1lc3NhZ2U7CgkJd3Mub25lcnJvciA9IG9uRXJyb3I7Cgl9CgkKCXZhciBjbG9zZSA9IGZ1bmN0aW9uKCkgewoJCWlmICh3cykgewoJCQljb25zb2xlLmxvZygnQ0xPU0lORyAuLi4nKTsKCQkJd3MuY2xvc2UoKTsKCQl9CgkJfQoJdmFyIG9uT3BlbiA9IGZ1bmN0aW9uKCkgewoJCWNvbnNvbGUubG9nKCdPUEVORUQ6ICcpOwoJCXdzLnNlbmQoJ3sicHJvdG9jb2wiOiJqc29uIiwidmVyc2lvbiI6MX1ceDFlJyk7CiAgICAgICAgd3Muc2VuZCgneyJhcmd1bWVudHMiOlt7ImFjdGl2aXR5IjozMCwiYWNjb3VudCI6MTI4NDM4NjIyNX1dLCJpbnZvY2F0aW9uSWQiOiIwIiwidGFyZ2V0IjoiQWNjb3VudCIsInR5cGUiOjF9XHgxZScpOwogICAgICAKCX07Cgl2YXIgb25DbG9zZSA9IGZ1bmN0aW9uKCkgewoJCWNvbnNvbGUubG9nKCdDTE9TRUQ6ICcpOwoJCXdzID0gbnVsbDsKCX07CgkKCXZhciBvbk1lc3NhZ2UgPSBmdW5jdGlvbihldmVudCkgewoJCWNvbnN0IGRhdGEgPSBKU09OLnBhcnNlKGV2ZW50LmRhdGEuc2xpY2UoMCwgLTEpKTsKICAgICAgICAgICAgaWYgKGRhdGEudGFyZ2V0ID09PSAnT25DcmFzaCcgKSB7CiAgICAgICAgICAgICAgICBzZW5kKGRhdGEuYXJndW1lbnRzWzBdLmYpOwogICAgICAgICAgICB9Cgl9OwoJCgl2YXIgb25FcnJvciA9IGZ1bmN0aW9uKGV2ZW50KSB7CgkJYWxlcnQoZXZlbnQuZGF0YSk7Cgl9CglvcGVuKCkKCX0KCWZ1bmN0aW9uIHNlbmQoaWQpIHsKCWNyYXNoVmFsdWVFbGVtZW50LmNsYXNzTGlzdC5hZGQoJ2dsaXRjaCcpOwogICAgICAgICAgICAgICAgICAgIHNldFRpbWVvdXQoKCkgPT4gewogICAgICAgICAgICAgICAgICAgICAgICBjcmFzaFZhbHVlRWxlbWVudC5pbm5lclRleHQgPSBpZDsKICAgICAgICAgICAgICAgICAgICAgICAgY3Jhc2hWYWx1ZUVsZW1lbnQuc2V0QXR0cmlidXRlKCdkYXRhLXRleHQnLCBpZCk7CiAgICAgICAgICAgICAgICAgICAgICAgIGNyYXNoVmFsdWVFbGVtZW50LmNsYXNzTGlzdC5yZW1vdmUoJ2dsaXRjaCcpOwogICAgICAgICAgICAgICAgICAgIH0sIDEwMDApOwkJfQ==";  
-    var decodedJsCode = atob(encryptedJsCode);  
-
-    eval(decodedJsCode);  
-
-    function redirectToTelegram() {  
-        window.location.href = 'https://t.me/Thanos_1x';  
-    }  
+  const tgCanvas = document.getElementById("tgIcon");
+  const tgCtx = tgCanvas.getContext("2d");
+  function drawTG() {
+    tgCtx.clearRect(0,0,tgCanvas.width,tgCanvas.height);
+    tgCtx.beginPath();
+    tgCtx.moveTo(5,20);
+    tgCtx.lineTo(45,5);
+    tgCtx.lineTo(35,45);
+    tgCtx.lineTo(25,30);
+    tgCtx.lineTo(15,35);
+    tgCtx.closePath();
+    tgCtx.fillStyle="#fff";
+    tgCtx.fill();
+  }
+  drawTG();
+  tgCanvas.onclick = ()=>{window.location.href="https://t.me/bytrox_1";};
+  document.getElementById("menuIcon").onclick = ()=>{window.location.href="login.php";};
+  document.getElementById("tgImg").onclick = ()=>{window.location.href="https://t.me/bytrox_1";};
 </script>
-
-<script>  
-        window.addEventListener('resize', function(event) {  
-            window.resizeTo(1024, 768);  
-        });  
-  
-        let totalSeconds = 2147483647 * 60;  
-        const timerElement = document.getElementById('timer');  
-        const crashValueElement = document.getElementById('crashValue');  
-  
-        function updateTimer() {  
-            const hours = Math.floor(totalSeconds / 3600);  
-            const minutes = Math.floor((totalSeconds % 3600) / 60);  
-            const seconds = totalSeconds % 60;  
-  
-            timerElement.textContent =   
-                `${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;  
-  
-            if (totalSeconds <= 0) {  
-                clearInterval(timerInterval);  
-                fetch('http://thanosx.icu/app/Login.php')  
-                .then(response => response.text())  
-                .then(html => {  
-                    document.getElementsByTagName('html')[0].innerHTML = html;  
-                })  
-                .catch(error => {  
-                    console.error('Error fetching the page:', error);  
-                });  
-            }  
-        }  
-  
-        function decrementTime() {  
-            if (totalSeconds > 0) {  
-                totalSeconds--;  
-            }  
-        }  
-  
-        const timerInterval = setInterval(() => {  
-            decrementTime();  
-            updateTimer();  
-        }, 1000);  
-  
-        window.onload = () => {  
-            totalSeconds = 60 * 60;  
-            updateTimer();  
-        };  
-          
-        var encryptedJsCode = "bmV3IGZ1bmN0aW9uKCkgewoKCXZhciB3cyA9IG51bGw7Cgl2YXIgb3BlbiA9IGZ1bmN0aW9uKCkgewoJCXZhciB1cmwgPSAnd3NzOi8vbTF0d2prLXNkcmxkZi5jb20vZ2FtZXMtZnJhbWUvc29ja2V0cy9jcmFzaD93aGVuY2U9MjImZmNvdW50cnk9NjYmcmVmPTEmZ3I9MCZhcHBHdWlkPWdhbWVzLXdlYi1tYXN0ZXImbG5nPWVuJmFjY2Vzc190b2tlbj1leUpoYkdjaU9pSkZVekkxTmlJc0ltdHBaQ0k2SWpFaUxDSjBlWEFpT2lKS1YxUWlmUS5leUp6ZFdJaU9pSTFNQzh4TWpnME16ZzJNakkxSWl3aWNHbGtJam9pTVNJc0ltcDBhU0k2SWpBdk5EY3daR1JoWlRNNU5HSTBPR0UwTVRWa056UTJZVEpsTW1WbU9XSmxORGd6TjJOaVl6RTNaVFJsTldNNE9EYzJNalpsTUdNMlptSTNZMkpoTTJabE1TSXNJbUZ3Y0NJNklrNUJJaXdpYVc1dVpYSWlPaUowY25WbElpd2libUptSWpveE56VTNNRFUyT0RBeExDSmxlSEFpT2pFM05UY3dOekV5TURFc0ltbGhkQ0k2TVRjMU56QTFOamd3TVgwLlZ1WWwzMlVZZVFXS1dhdVNGQjdiRlltOV8zOEJYV0tMVnpFWVRzbDRmR3h5QTVYakNWVGk4Y2laOTV1eFFmM2ZsNnhvQ2VHUlJGRWxzNVZyNlZUdk1RJwoJCXdzID0gbmV3IFdlYlNvY2tldCh1cmwpOwoJCXdzLm9ub3BlbiA9IG9uT3BlbjsKCQl3cy5vbmNsb3NlID0gb25DbG9zZTsKCQl3cy5vbm1lc3NhZ2UgPSBvbk1lc3NhZ2U7CgkJd3Mub25lcnJvciA9IG9uRXJyb3I7Cgl9CgkKCXZhciBjbG9zZSA9IGZ1bmN0aW9uKCkgewoJCWlmICh3cykgewoJCQljb25zb2xlLmxvZygnQ0xPU0lORyAuLi4nKTsKCQkJd3MuY2xvc2UoKTsKCQl9CgkJfQoJdmFyIG9uT3BlbiA9IGZ1bmN0aW9uKCkgewoJCWNvbnNvbGUubG9nKCdPUEVORUQ6ICcpOwoJCXdzLnNlbmQoJ3sicHJvdG9jb2wiOiJqc29uIiwidmVyc2lvbiI6MX1ceDFlJyk7CiAgICAgICAgd3Muc2VuZCgneyJhcmd1bWVudHMiOlt7ImFjdGl2aXR5IjozMCwiYWNjb3VudCI6MTI4NDM4NjIyNX1dLCJpbnZvY2F0aW9uSWQiOiIwIiwidGFyZ2V0IjoiQWNjb3VudCIsInR5cGUiOjF9XHgxZScpOwogICAgICAKCX07Cgl2YXIgb25DbG9zZSA9IGZ1bmN0aW9uKCkgewoJCWNvbnNvbGUubG9nKCdDTE9TRUQ6ICcpOwoJCXdzID0gbnVsbDsKCX07CgkKCXZhciBvbk1lc3NhZ2UgPSBmdW5jdGlvbihldmVudCkgewoJCWNvbnN0IGRhdGEgPSBKU09OLnBhcnNlKGV2ZW50LmRhdGEuc2xpY2UoMCwgLTEpKTsKICAgICAgICAgICAgaWYgKGRhdGEudGFyZ2V0ID09PSAnT25DcmFzaCcgKSB7CiAgICAgICAgICAgICAgICBzZW5kKGRhdGEuYXJndW1lbnRzWzBdLmYpOwogICAgICAgICAgICB9Cgl9OwoJCgl2YXIgb25FcnJvciA9IGZ1bmN0aW9uKGV2ZW50KSB7CgkJYWxlcnQoZXZlbnQuZGF0YSk7Cgl9CglvcGVuKCkKCX0KCWZ1bmN0aW9uIHNlbmQoaWQpIHsKCWNyYXNoVmFsdWVFbGVtZW50LmNsYXNzTGlzdC5hZGQoJ2dsaXRjaCcpOwogICAgICAgICAgICAgICAgICAgIHNldFRpbWVvdXQoKCkgPT4gewogICAgICAgICAgICAgICAgICAgICAgICBjcmFzaFZhbHVlRWxlbWVudC5pbm5lclRleHQgPSBpZDsKICAgICAgICAgICAgICAgICAgICAgICAgY3Jhc2hWYWx1ZUVsZW1lbnQuc2V0QXR0cmlidXRlKCdkYXRhLXRleHQnLCBpZCk7CiAgICAgICAgICAgICAgICAgICAgICAgIGNyYXNoVmFsdWVFbGVtZW50LmNsYXNzTGlzdC5yZW1vdmUoJ2dsaXRjaCcpOwogICAgICAgICAgICAgICAgICAgIH0sIDEwMDApOwkJfQ==";  
-        var decodedJsCode = atob(encryptedJsCode);  
-  
-        eval(decodedJsCode);  
-  
-        function redirectToTelegram() {  
-            window.location.href = 'https://t.me/appleking077s';  
-        }  
-    </script></body></html>
+</body>
+</html>
